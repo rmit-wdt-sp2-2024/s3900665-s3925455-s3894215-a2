@@ -44,7 +44,7 @@ CREATE TABLE Login (
 );
 
 -- Create Transactions Table
-CREATE TABLE Transactions (
+CREATE TABLE [Transaction] (
     TransactionID INT PRIMARY KEY IDENTITY,
     AccountNumber INT,
     Amount DECIMAL(18, 2),
@@ -76,7 +76,6 @@ CREATE TABLE Payee (
     Postcode NVARCHAR(10),
     Phone NVARCHAR(15)
 );
-
 
 -- alter table Customer add Mobile NVARCHAR(20)
 
