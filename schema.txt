@@ -14,92 +14,77 @@ Schema/ table
 -----------------------------------------------
 
 
-create table Customer
-(
-    CustomerID int not null,
-    Name nvarchar(50) not null,
-    Address nvarchar(50) null,
-    City nvarchar(40) null,
-    PostCode nvarchar(4) null,
-	Mobile nvarchar(10) null,
-    constraint PK_Customer primary key (CustomerID)
+CREATE TABLE Customer (
+    CustomerID INT PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL,
+    Address NVARCHAR(200),
+    City NVARCHAR(100),
+    Postcode NVARCHAR(10),
+    FreeTransactions INT,
+    ProfilePictureFileName NVARCHAR(200),
+    State NVARCHAR(100),
+    TFN NVARCHAR(20),
+    Mobile NVARCHAR(20)
 );
 
-create table Login
-(
-    LoginID char(8) not null,
-    CustomerID int not null,
-    PasswordHash char(94) not null,
-    constraint PK_Login primary key (LoginID),
-    constraint FK_Login_Customer foreign key (CustomerID) references Customer (CustomerID),
-    constraint CH_Login_LoginID check (len(LoginID) = 8),
-    constraint CH_Login_PasswordHash check (len(PasswordHash) = 94)
+-- Create Account Table
+CREATE TABLE Account (
+    AccountNumber INT PRIMARY KEY,
+    AccountType CHAR(1) NOT NULL,
+    CustomerID INT,
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
 );
 
-create table Account
-(
-    AccountNumber int not null,
-    AccountType char not null,
-    CustomerID int not null,
-    Balance money not null,
-    constraint PK_Account primary key (AccountNumber),
-    constraint FK_Account_Customer foreign key (CustomerID) references Customer (CustomerID),
-    constraint CH_Account_AccountType check (AccountType in ('C', 'S')),
-    constraint CH_Account_Balance check (Balance >= 0)
+-- Create Login Table
+CREATE TABLE Login (
+    LoginID NVARCHAR(50) PRIMARY KEY,
+    CustomerID INT,
+    PasswordHash NVARCHAR(200),
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+);
+
+-- Create Transactions Table
+CREATE TABLE Transactions (
+    TransactionID INT PRIMARY KEY IDENTITY,
+    AccountNumber INT,
+    Amount DECIMAL(18, 2),
+    Comment NVARCHAR(200),
+    TransactionTimeUtc DATETIME,
+    TransactionType CHAR(1),
+    DestinationAccountNumber INT,
+    FOREIGN KEY (AccountNumber) REFERENCES Account(AccountNumber)
+);
+
+-- Create BillPay Table
+CREATE TABLE BillPay (
+    BillPayID INT PRIMARY KEY IDENTITY,
+    AccountNumber INT,
+    PayeeID INT,
+    Amount DECIMAL(18, 2),
+    ScheduleDate DATETIME,
+    Period CHAR(1),
+    FOREIGN KEY (AccountNumber) REFERENCES Account(AccountNumber)
+);
+
+-- Create Payee Table
+CREATE TABLE Payee (
+    PayeeID INT PRIMARY KEY,
+    Name NVARCHAR(100),
+    Address NVARCHAR(200),
+    City NVARCHAR(100),
+    State NVARCHAR(100),
+    Postcode NVARCHAR(10),
+    Phone NVARCHAR(15)
 );
 
 
-
-
-create table [Transaction]
-(
-    TransactionID int identity not null,
-    TransactionType char not null,
-    AccountNumber int not null,
-    DestinationAccountNumber int null,
-    Amount money not null,
-    Comment nvarchar(30) null,
-    TransactionTimeUtc datetime2 not null,
-    constraint PK_Transaction primary key (TransactionID),
-    constraint FK_Transaction_Account_AccountNumber
-    foreign key (AccountNumber) references Account (AccountNumber),
-    constraint FK_Transaction_Account_DestinationAccountNumber
-    foreign key (DestinationAccountNumber) references Account (AccountNumber),
-    constraint CH_Transaction_TransactionType check (TransactionType in ('D', 'W', 'T', 'S')),
-    constraint CH_Transaction_Amount check (Amount > 0)
-);
-
-
-create table BillPay
-(
-BillPayID int not null,
-AccountNumber int not null,
-PayeeID int not null,
-Amount money not null, 
-ScheduleTimeUtc datetime2 not null,
-Period int not null,
-constraint PK_BillPayID primary key (BillPayID),
-CONSTRAINT FK_AccountNumber FOREIGN KEY (AccountNumber) REFERENCES Accounts (AccountNumber), 
-CONSTRAINT FK_PayeeID FOREIGN KEY (PayeeID) REFERENCES Payees(PayeeID),
-constraint CH_Amount check (Amount >= 0),
-constraint CH_Period check (Period >= 0)
-);
-
-Create table Payee
-(
-PayeeID int not null,
-    Name nvarchar(50) not null,
-    Address nvarchar(50) null,
-    City nvarchar(40) null,,
-    PostCode nvarchar(4) null,
-	Mobile nvarchar(10) null,
-constraint PK_Payee primary key (PayeeID)
-
-);
+-- alter table Customer add Mobile NVARCHAR(20)
 
 ----------------------------------------
 Reset DB
 ----------------------------------------
+
+-- Clear all rows from all tables
 
 EXEC sp_MSForEachTable 'DISABLE TRIGGER ALL ON ?'
 GO
@@ -111,3 +96,11 @@ EXEC sp_MSForEachTable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT ALL'
 GO
 EXEC sp_MSForEachTable 'ENABLE TRIGGER ALL ON ?'
 GO
+
+
+drop table if exists Account;
+drop table if exists Customer;
+drop table if exists [Login];
+drop table if exists [Transactions];
+drop table if exists Payee;
+drop table if exists BillPay;
