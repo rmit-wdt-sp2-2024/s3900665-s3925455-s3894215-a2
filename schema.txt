@@ -62,6 +62,8 @@ CREATE TABLE BillPay (
     Amount DECIMAL(18, 2),
     ScheduleDate DATETIME,
     Period CHAR(1),
+    ScheduleTimeUtc DATETIME,
+    Status INT,
     FOREIGN KEY (AccountNumber) REFERENCES Account(AccountNumber)
 );
 
