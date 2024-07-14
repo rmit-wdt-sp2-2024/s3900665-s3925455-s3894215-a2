@@ -2,7 +2,7 @@ Database:
 ----------------------------------------------
 rmit.australiaeast.cloudapp.azure.com
 SQL Login
-s3925455_a2
+s3900665_a2  snf s3925455_a2
 abc123
 database:s3925455_a2
 Encription Mandatory
@@ -13,17 +13,16 @@ Servergroup: default
 Schema/ table
 -----------------------------------------------
 
-
 CREATE TABLE Customer (
     CustomerID INT PRIMARY KEY,
     Name NVARCHAR(100) NOT NULL,
     Address NVARCHAR(200),
     City NVARCHAR(100),
-    Postcode NVARCHAR(10),
+    Postcode INT,
     FreeTransactions INT,
     ProfilePictureFileName NVARCHAR(200),
     State NVARCHAR(100),
-    TFN NVARCHAR(20),
+    TFN INT,
     Mobile NVARCHAR(20)
 );
 
@@ -77,8 +76,6 @@ CREATE TABLE Payee (
     Phone NVARCHAR(15)
 );
 
--- alter table Customer add Mobile NVARCHAR(20)
-
 ----------------------------------------
 Reset DB
 ----------------------------------------
@@ -96,10 +93,12 @@ GO
 EXEC sp_MSForEachTable 'ENABLE TRIGGER ALL ON ?'
 GO
 
-
+----------------------------------------------
+Drop Table
+------------------------------------------
 drop table if exists Account;
 drop table if exists Customer;
 drop table if exists [Login];
-drop table if exists [Transactions];
+drop table if exists [Transaction];
 drop table if exists Payee;
 drop table if exists BillPay;
