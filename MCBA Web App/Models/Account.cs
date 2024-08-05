@@ -22,7 +22,34 @@ namespace MCBA_Web_App.Models
 
         public decimal FindBalance()
         {
-            return 0;
+            decimal balance = 0;
+            if (Transactions == null)
+            {
+                return 0;
+            }
+            foreach (var transaction in Transactions)
+            {
+                if (transaction.TransactionType == 'D')
+                {
+                    balance += transaction.Amount;
+                }
+                else if (transaction.TransactionType == 'W' || transaction.TransactionType == 'S' || transaction.TransactionType == 'B')
+                {
+                    balance -= transaction.Amount;
+                }
+                else if (transaction.TransactionType == 'T')
+                {
+                    if (transaction.DestinationAccountNumber == null)
+                    {
+                        balance += transaction.Amount;
+                    }
+                    else
+                    {
+                        balance -= transaction.Amount;
+                    }
+                }
+            }
+            return balance;
         }
 
         public decimal GetMinimumAmount() {
@@ -46,10 +73,30 @@ namespace MCBA_Web_App.Models
 
         public void AddTransaction(int acNo, decimal amount, String comment, char type)
         {
+            Transactions.Add(
+                new Transactions
+                {
+                    AccountNumber = acNo,
+                    TransactionType = type,
+                    Comment = comment,
+                    Amount = amount,
+                    TransactionTimeUtc = DateTime.UtcNow
+                });
         }
 
         public void AddTransfer(int sourceAccount, int destinationAccountNumber, decimal amount, String comment)
         {
+            var transferTimeUtc = DateTime.UtcNow;
+            Transactions.Add(
+                new Transactions //Transfering From
+                {
+                    AccountNumber = sourceAccount,
+                    DestinationAccountNumber = destinationAccountNumber,
+                    TransactionType = 'T',
+                    Comment = comment,
+                    Amount = amount,
+                    TransactionTimeUtc = transferTimeUtc
+                });
         }
 
         public decimal GetAvailableBalance()
