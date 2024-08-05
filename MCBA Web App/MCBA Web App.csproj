@@ -21,4 +21,13 @@
     <PackageReference Include="SimpleHashing.Net" Version="2.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\BillPay\" />
+    <Folder Include="Views\Shared\" />
+    <Folder Include="Views\Login\" />
+    <Folder Include="Views\Profile\" />
+    <Folder Include="Views\Landing\" />
+    <Folder Include="Views\Home\" />
+  </ItemGroup>
+
 </Project>
