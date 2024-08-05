@@ -22,7 +22,34 @@ namespace MCBA_Web_App.Models
 
         public decimal FindBalance()
         {
-            return 0;
+            decimal balance = 0;
+            if (Transactions == null)
+            {
+                return 0;
+            }
+            foreach (var transaction in Transactions)
+            {
+                if (transaction.TransactionType == 'D')
+                {
+                    balance += transaction.Amount;
+                }
+                else if (transaction.TransactionType == 'W' || transaction.TransactionType == 'S' || transaction.TransactionType == 'B')
+                {
+                    balance -= transaction.Amount;
+                }
+                else if (transaction.TransactionType == 'T')
+                {
+                    if (transaction.DestinationAccountNumber == null)
+                    {
+                        balance += transaction.Amount;
+                    }
+                    else
+                    {
+                        balance -= transaction.Amount;
+                    }
+                }
+            }
+            return balance;
         }
 
         public decimal GetMinimumAmount() {
