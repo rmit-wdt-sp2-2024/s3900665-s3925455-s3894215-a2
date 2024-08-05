@@ -8,9 +8,11 @@
 
   <ItemGroup>
     <Content Remove="Views\Home\Index.cshtml" />
+    <Content Remove="Views\Home\Privacy.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Views\Home\Privacy.cshtml" />
     <Compile Include="Views\Home\Index.cshtml" />
   </ItemGroup>
 
