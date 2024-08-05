@@ -37,14 +37,5 @@ namespace MCBA_Web_App.Models
         public Login Login { get; set; }
 
         public int? FreeTransactions { get; set; }
-
-        public bool CheckForFreeTransactions()
-        {
-            if (FreeTransactions == 0 || FreeTransactions == null)
-            {
-                return false;
-            }
-            return true;
-        }
     }
 }
