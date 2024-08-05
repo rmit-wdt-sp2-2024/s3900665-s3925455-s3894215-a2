@@ -46,6 +46,15 @@ namespace MCBA_Web_App.Models
 
         public void AddTransaction(int acNo, decimal amount, String comment, char type)
         {
+            Transactions.Add(
+                new Transactions
+                {
+                    AccountNumber = acNo,
+                    TransactionType = type,
+                    Comment = comment,
+                    Amount = amount,
+                    TransactionTimeUtc = DateTime.UtcNow
+                });
         }
 
         public void AddTransfer(int sourceAccount, int destinationAccountNumber, decimal amount, String comment)
