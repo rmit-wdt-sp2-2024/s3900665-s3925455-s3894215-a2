@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\MCBA Web App.props" />
+</Project>
