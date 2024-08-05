@@ -33,8 +33,8 @@ namespace MCBA_Web_App
                 //options.UseLazyLoadingProxies();
             });
             //Add Background services
-            services.AddHostedService<BillPayService>();
-            services.AddScoped<BillPayService>();
+            //services.AddHostedService<BillPayService>();
+            //services.AddScoped<BillPayService>();
 
             services.AddDistributedMemoryCache();
 

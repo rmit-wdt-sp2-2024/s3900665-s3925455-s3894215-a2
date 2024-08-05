@@ -1,0 +1,9 @@
+C:\Users\Nikhil\Desktop\MCBA Web App\MCBA Web App\obj\Debug\net7.0\MCBA Web App.csproj.AssemblyReference.cache
+C:\Users\Nikhil\Desktop\MCBA Web App\MCBA Web App\obj\Debug\net7.0\MCBA Web App.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Nikhil\Desktop\MCBA Web App\MCBA Web App\obj\Debug\net7.0\MCBA Web App.AssemblyInfoInputs.cache
+C:\Users\Nikhil\Desktop\MCBA Web App\MCBA Web App\obj\Debug\net7.0\MCBA Web App.AssemblyInfo.cs
+C:\Users\Nikhil\Desktop\MCBA Web App\MCBA Web App\obj\Debug\net7.0\MCBA Web App.csproj.CoreCompileInputs.cache
+C:\Users\Nikhil\Desktop\MCBA Web App\MCBA Web App\obj\Debug\net7.0\MCBA Web App.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Nikhil\Desktop\MCBA Web App\MCBA Web App\obj\Debug\net7.0\MCBA Web App.RazorAssemblyInfo.cache
+C:\Users\Nikhil\Desktop\MCBA Web App\MCBA Web App\obj\Debug\net7.0\MCBA Web App.RazorAssemblyInfo.cs
+C:\Users\Nikhil\Desktop\MCBA Web App\MCBA Web App\obj\Debug\net7.0\MCBA Web App.sourcelink.json
