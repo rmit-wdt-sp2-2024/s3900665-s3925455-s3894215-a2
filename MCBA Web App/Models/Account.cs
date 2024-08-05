@@ -59,6 +59,17 @@ namespace MCBA_Web_App.Models
 
         public void AddTransfer(int sourceAccount, int destinationAccountNumber, decimal amount, String comment)
         {
+            var transferTimeUtc = DateTime.UtcNow;
+            Transactions.Add(
+                new Transactions //Transfering From
+                {
+                    AccountNumber = sourceAccount,
+                    DestinationAccountNumber = destinationAccountNumber,
+                    TransactionType = 'T',
+                    Comment = comment,
+                    Amount = amount,
+                    TransactionTimeUtc = transferTimeUtc
+                });
         }
 
         public decimal GetAvailableBalance()
