@@ -12,7 +12,7 @@ https://github.com/Nikhil-RMIT/wdt-test
 ***************************************************
 
 Our Application
-Our team has delevoped a MVC application for Most Common Bank of Australia. WE have done this using ASP.NEt 7.0 and a MVC design. We developed our database using a code-first approach and have updated using this method as needed. To run our application, please open the project files in Visual Studio and open the "MCBA Web App.sln". PLease build/rebuild this file and then run to open to the login screen. From here you can login using one of the logins provided. From here, you can deposit/transfer/withdraw, set up Scheduled payments, View statements, View and Update your profile.
+Our team has developed an MVC application for the Most Common Bank of Australia. We have done this using ASP.NEt 7.0 and an MVC design. We created our database using a code-first approach and have updated using this method as needed. To run our application, please open the project files in Visual Studio and open the "MCBA Web App.sln". PLease build/rebuild this file and then run to open to the login screen. From here you can login using one of the logins provided. From here, you can deposit/transfer/withdraw, set up Scheduled payments, View statements, View and Update your profile.
 
 We have also implemented testing as part of our final submission.
 
