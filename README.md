@@ -1,4 +1,4 @@
-# s3900665-s3925455-a2
+# s3900665-s3925455-s3894215-a2
 Private repo for WDT A2
 Git URL : https://github.com/rmit-wdt-sp2-2024/s3900665-s3925455-a2.git
 
@@ -6,8 +6,10 @@ Git URL : https://github.com/rmit-wdt-sp2-2024/s3900665-s3925455-a2.git
 Students-
 Nikhil Govula - s3900665@student.rmit.edu.au
 Amit Munjal - s3925455@student.rmit.edu.au
+Idris Anwar - s3894215@student.rmit.edu.au
+
 GitHub Repo
-https://github.com/Nikhil-RMIT/wdt-test
+https://github.com/rmit-wdt-sp2-2024/s3900665-s3925455-s3894215-a2
 
 ***************************************************
 
