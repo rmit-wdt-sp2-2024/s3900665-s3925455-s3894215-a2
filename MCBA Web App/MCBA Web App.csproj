@@ -32,7 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\BillPay\" />
     <Folder Include="Views\Shared\" />
     <Folder Include="Views\Login\" />
     <Folder Include="Views\Profile\" />
