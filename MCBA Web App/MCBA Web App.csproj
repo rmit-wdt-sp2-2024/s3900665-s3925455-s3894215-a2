@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Home\Index.cshtml" />
+    <Content Remove="Views\Home\Privacy.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Views\Home\Privacy.cshtml" />
+    <Compile Include="Views\Home\Index.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.15" />
@@ -27,7 +37,6 @@
     <Folder Include="Views\Login\" />
     <Folder Include="Views\Profile\" />
     <Folder Include="Views\Landing\" />
-    <Folder Include="Views\Home\" />
   </ItemGroup>
 
 </Project>
