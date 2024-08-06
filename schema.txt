@@ -1,4 +1,5 @@
-Database:
+----------------------------------------------
+****  Database:
 ----------------------------------------------
 rmit.australiaeast.cloudapp.azure.com
 SQL Login
@@ -10,7 +11,7 @@ Trust cert: True
 Servergroup: default
 
 -----------------------------------------------
-Schema/ table
+****   Schema/ table  ****
 -----------------------------------------------
 
 CREATE TABLE Customer (
@@ -79,7 +80,7 @@ CREATE TABLE Payee (
 );
 
 ----------------------------------------
-Reset DB
+*** Reset DB ***
 ----------------------------------------
 
 -- Clear all rows from all tables
@@ -96,7 +97,7 @@ EXEC sp_MSForEachTable 'ENABLE TRIGGER ALL ON ?'
 GO
 
 ----------------------------------------------
-Drop Table
+**   Drop Table   ***
 ------------------------------------------
 drop table if exists Account;
 drop table if exists Customer;
