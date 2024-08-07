@@ -1,0 +1,37 @@
+@model Customer
+@{
+    ViewData["Title"] = "Accounts";
+}
+
+<div>
+    <h1 class="display-4">Welcome, @Model.Name</h1>
+
+    <h3>Your Accounts</h3>
+
+    <table class="table">
+        <tr>
+            <th>Account Number</th>
+            <th>Account Type</th>
+            <th>Current Balance</th>
+            <th></th>
+        </tr>
+        @foreach (var account in Model.Accounts)
+        {
+        <tr>
+            <td>@Html.DisplayFor(x => account.AccountNumber)</td>
+            <td>@account.ReturnFormattedType()</td>
+            <td>$@account.FindBalance()</td>
+            <td>
+                <a class="btn btn-primary"
+                   asp-action="Statements" asp-route-id="@account.AccountNumber">Statements</a>
+                <a class="btn btn-primary"
+                   asp-action="Deposit" asp-route-id="@account.AccountNumber">Deposit</a>
+                <a class="btn btn-primary"
+                   asp-action="Withdraw" asp-route-id="@account.AccountNumber">Withdraw</a>
+                <a class="btn btn-primary"
+                   asp-action="Transfer" asp-route-id="@account.AccountNumber">Transfer</a>
+            </td>
+        </tr>
+        }
+    </table>
+</div>
