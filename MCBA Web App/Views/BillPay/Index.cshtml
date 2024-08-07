@@ -1,0 +1,56 @@
+﻿@model IEnumerable<MCBA_Web_App.Models.BillPay>
+
+<h2>Bill Pays</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PayeeID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ScheduleTimeUtc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Period)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+                <tr>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.AccountNumber)
+                    </td>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.PayeeID)
+                    </td>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.Amount)
+                    </td>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.ScheduleTimeUtc)
+                    </td>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.Period)
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.BillPayID">Details</a> |
+                        <a asp-action="Edit" asp-route-id="@item.BillPayID">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.BillPayID">Delete</a>
+                    </td>
+                </tr>
+        }
+    </tbody>
+</table>
