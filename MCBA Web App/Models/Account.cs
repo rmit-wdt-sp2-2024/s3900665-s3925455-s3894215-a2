@@ -81,7 +81,7 @@ namespace MCBA_Web_App.Models
                     Comment = comment,
                     Amount = amount,
                     TransactionTimeUtc = DateTime.UtcNow
-                });
+                }); 
         }
 
         public void AddTransfer(int sourceAccount, int destinationAccountNumber, decimal amount, String comment)

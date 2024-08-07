@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MCBA_Web_App.Models
 {
@@ -35,6 +35,8 @@ namespace MCBA_Web_App.Models
 
         public virtual List<Account> Accounts { get; set; }
         public Login Login { get; set; }
+
+        public string? ProfilePictureFileName { get; set; }
 
         public int? FreeTransactions { get; set; }
 

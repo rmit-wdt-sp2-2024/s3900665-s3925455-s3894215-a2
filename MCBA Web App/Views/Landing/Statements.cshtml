@@ -1,0 +1,48 @@
+﻿@model List<MCBA_Web_App.Models.Transactions>
+
+<h2>My Statements</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Account Number</th>
+            <th>Destination Account</th>
+            <th>Amount</th>
+            <th>Transaction Time</th>
+            <th>Comment</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var transaction in Model)
+        {
+            <tr>
+                <td>@transaction.TransactionID</td>
+                <td>@transaction.GetFormattedType()</td>
+                <td>@transaction.AccountNumber</td>
+                <td>@transaction.DestinationAccountNumber</td>
+                <td>@transaction.Amount</td>
+                <td>@transaction.TransactionTimeUtc.ToString("dd/MM/yyyy hh:mm tt")</td>
+                <td>@transaction.Comment</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (ViewBag.TotalPages > 1)
+{
+    <div>
+        Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)
+        @if (ViewBag.CurrentPage > 1)
+        {
+            <a href="@Url.Action("Statements", new { id = ViewBag.AccountId, page = 1 })">First</a>
+            <a href="@Url.Action("Statements", new { id = ViewBag.AccountId, page = ViewBag.CurrentPage - 1 })">Previous</a>
+        }
+        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+        {
+            <a href="@Url.Action("Statements", new { id = ViewBag.AccountId, page = ViewBag.CurrentPage + 1 })">Next</a>
+            <a href="@Url.Action("Statements", new { id = ViewBag.AccountId, page = ViewBag.TotalPages })">Last</a>
+        }
+    </div>
+}

@@ -220,7 +220,7 @@ namespace MCBA_Web_App.Controllers
             {
                 // Log or handle the exception
                 Console.WriteLine($"Error uploading profile picture: {ex.Message}");
-                return RedirectToAction("Index", "Landing");
+                return RedirectToAction("Index", "Landing"); 
             }
         }
 

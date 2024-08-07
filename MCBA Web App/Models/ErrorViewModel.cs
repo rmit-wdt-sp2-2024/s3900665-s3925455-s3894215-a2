@@ -1,4 +1,4 @@
-﻿namespace MCBA_Web_App.Models
+namespace MCBA_Web_App.Models
 {
     public class ErrorViewModel
     {
