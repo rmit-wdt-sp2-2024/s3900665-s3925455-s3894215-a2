@@ -1,0 +1,97 @@
+@model MCBA_Web_App.Models.Customer
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<h1>My Profile</h1>
+
+<td>
+    @if (!string.IsNullOrEmpty(Model.ProfilePictureFileName))
+    {
+    <img src="@Url.Content("~/profile_images/" + Model.ProfilePictureFileName)" alt="Profile Picture" class="profile-picture" />
+    }
+    else
+    {
+    <img src="@Url.Content("~/profile_images/default_profile_image.jpg")" alt="Default profile Picture" class="profile-picture" />
+    }
+</td>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TFN)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Postcode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Mobile)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => @Model.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => @Model.TFN)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => @Model.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => @Model.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => @Model.State)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => @Model.Postcode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => @Model.Mobile)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@Model.CustomerID">Edit</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="col-md-4">
+    <form asp-action="UpdatePassword">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            <label for="NewPassword" class="control-label">New Password</label>
+            <input id="NewPassword" name="NewPassword" type="password" class="form-control"
+                   data-val="true" data-val-required="The New Password field is required." />
+        </div>
+        <div class="form-group">
+            <label for="ConfirmPassword" class="control-label">Confirm Password</label>
+            <input id="ConfirmPassword" name="ConfirmPassword" type="password" class="form-control"
+                   data-val="true" data-val-required="The Confirm Password field is required." />
+            @Html.ValidationMessage("ConfirmPassword", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Update" class="btn btn-primary" />
+        </div>
+        @Html.ValidationMessage("PasswordFailed", new { @class = "text-danger" })
+    </form>
+</div>
