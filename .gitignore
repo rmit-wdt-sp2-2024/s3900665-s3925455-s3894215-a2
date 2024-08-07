@@ -4,5 +4,5 @@
 
 /.vs
 /MCBA Web App/.vs/MCBA Web App
-bin
-/MCBA Web App/obj
+/MCBA Web App/obj/Debug/net7.0
+/MCBA Web App/bin
