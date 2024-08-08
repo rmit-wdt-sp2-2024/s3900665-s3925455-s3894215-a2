@@ -111,10 +111,16 @@ namespace MCBA_Web_App.Controllers
 
         //Update Password
         [HttpPost]
-        public async Task<IActionResult> UpdatePassword(string newPassword, string confirmPassword)
+        public async Task<IActionResult> UpdatePassword(string oldPassword, string newPassword, string confirmPassword)
         {
             try
             {
+                if (string.IsNullOrEmpty(oldPassword) || oldPassword != confirmPassword)
+                {
+                    ModelState.AddModelError("PasswordFailed", "Change Password failed, please try again.");
+                    return RedirectToAction("Index"); // Return to the profile view with an error message
+                }
+
                 if (string.IsNullOrEmpty(newPassword) || newPassword != confirmPassword)
                 {
                     ModelState.AddModelError("PasswordFailed", "Change Password failed, please try again.");
