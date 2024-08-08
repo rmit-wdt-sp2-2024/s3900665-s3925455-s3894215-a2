@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MCBA_Web_App.Data;
 using MCBA_Web_App.Models;
-using Microsoft.AspNetCore.Http; // Add this for HttpContext
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data.SqlTypes;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MCBA_Web_App.Controllers
 {
@@ -53,8 +54,24 @@ namespace MCBA_Web_App.Controllers
         }
 
         // GET: BillPay/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            // Retrieve the logged-in user ID from the session
+            int? loggedInUserId = HttpContext.Session.GetInt32(nameof(Customer.CustomerID));
+
+            if (loggedInUserId == null)
+            {
+                // Handle the case where the user is not logged in
+                return RedirectToAction("Login", "Home");
+            }
+
+            // Fetch accounts for the logged-in user
+            var accounts = await _context.Account
+                .Where(a => a.CustomerID == loggedInUserId)
+                .ToListAsync();
+
+            ViewBag.Accounts = new SelectList(accounts, "AccountNumber", "AccountNumber");
+
             return View();
         }
 
@@ -76,9 +93,17 @@ namespace MCBA_Web_App.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            // Re-fetch accounts in case of validation errors
+            int? loggedInUserId = HttpContext.Session.GetInt32(nameof(Customer.CustomerID));
+            var accounts = await _context.Account
+                .Where(a => a.CustomerID == loggedInUserId)
+                .ToListAsync();
+
+            ViewBag.Accounts = new SelectList(accounts, "AccountNumber", "AccountNumber");
+
             return View(billPay);
         }
-
 
         // GET: BillPay/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -97,7 +122,6 @@ namespace MCBA_Web_App.Controllers
             // Convert UTC date to local time for display in the edit form
             billPay.ScheduleTimeUtc = TimeZoneInfo.ConvertTimeFromUtc(billPay.ScheduleTimeUtc, TimeZoneInfo.Local);
 
-            // Provide any necessary data to the view, e.g., Payees, AccountNumbers, etc.
             return View(billPay);
         }
 
@@ -135,7 +159,6 @@ namespace MCBA_Web_App.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Provide any necessary data to the view, e.g., Payees, AccountNumbers, etc.
             return View(billPay);
         }
 
