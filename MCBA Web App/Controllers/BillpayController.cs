@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using MCBA_Web_App.Data;
 using MCBA_Web_App.Models;
 using Microsoft.AspNetCore.Http; // Add this for HttpContext
 using Microsoft.Extensions.DependencyInjection;
+using System.Data.SqlTypes;
 
 namespace MCBA_Web_App.Controllers
 {
@@ -49,6 +51,34 @@ namespace MCBA_Web_App.Controllers
 
             return View(billPays);
         }
+
+        // GET: BillPay/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: BillPay/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("BillPayID,AccountNumber,PayeeID,Amount,ScheduleTimeUtc,Period")] BillPay billPay)
+        {
+            if (ModelState.IsValid)
+            {
+                // Ensure ScheduleTimeUtc is within a valid range
+                if (billPay.ScheduleTimeUtc < SqlDateTime.MinValue.Value || billPay.ScheduleTimeUtc > SqlDateTime.MaxValue.Value)
+                {
+                    ModelState.AddModelError("ScheduleTimeUtc", "The scheduled date must be within a valid range.");
+                    return View(billPay);
+                }
+
+                _context.Add(billPay);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(billPay);
+        }
+
 
         // GET: BillPay/Edit/5
         public async Task<IActionResult> Edit(int? id)
