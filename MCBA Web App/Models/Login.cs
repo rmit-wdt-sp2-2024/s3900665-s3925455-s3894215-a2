@@ -5,6 +5,7 @@ namespace MCBA_Web_App.Models
 {
     public class Login
     {
+        
         [Required]
         [Key]
         public string LoginID { get; set; }
