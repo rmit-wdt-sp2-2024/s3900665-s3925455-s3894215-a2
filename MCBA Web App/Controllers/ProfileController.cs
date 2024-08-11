@@ -115,12 +115,14 @@ namespace MCBA_Web_App.Controllers
         {
             try
             {
-                if (string.IsNullOrEmpty(oldPassword) || oldPassword != confirmPassword)
+                /*
+                login.PasswordHash = currentPassword;
+                if (string.IsNullOrEmpty(oldPassword) || oldPassword != currentPassword)
                 {
-                    ModelState.AddModelError("PasswordFailed", "Change Password failed, please try again.");
-                    return RedirectToAction("Index"); // Return to the profile view with an error message
+                    ModelState.AddModelError("PasswordFailed", "All password fields are required.");
+                    return View("Index"); // Return the profile view with an error message
                 }
-
+                */
                 if (string.IsNullOrEmpty(newPassword) || newPassword != confirmPassword)
                 {
                     ModelState.AddModelError("PasswordFailed", "Change Password failed, please try again.");
@@ -136,6 +138,25 @@ namespace MCBA_Web_App.Controllers
                 {
                     // Handle the case where the login is not found
                     return RedirectToAction("Index", "Landing");
+                }
+
+                // Extract the stored password components (salt and hash)
+                var storedHashParts = login.PasswordHash.Split('$');
+                var salt = Convert.FromBase64String(storedHashParts[2]);
+
+                // Hash the old password provided by the user
+                byte[] oldPasswordHash;
+                using (var deriveBytes = new Rfc2898DeriveBytes(oldPassword, salt, 50000, HashAlgorithmName.SHA1))
+                {
+                    oldPasswordHash = deriveBytes.GetBytes(32);
+                }
+
+                var oldPasswordHashBase64 = Convert.ToBase64String(oldPasswordHash);
+                if (storedHashParts[3] != oldPasswordHashBase64)
+                {
+                    // Old password does not match
+                    ModelState.AddModelError("PasswordFailed", "Old password is incorrect.");
+                    return View("Index");
                 }
 
                 // Generate a new salt
