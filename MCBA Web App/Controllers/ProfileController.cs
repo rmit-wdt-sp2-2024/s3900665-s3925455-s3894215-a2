@@ -115,14 +115,6 @@ namespace MCBA_Web_App.Controllers
         {
             try
             {
-                /*
-                login.PasswordHash = currentPassword;
-                if (string.IsNullOrEmpty(oldPassword) || oldPassword != currentPassword)
-                {
-                    ModelState.AddModelError("PasswordFailed", "All password fields are required.");
-                    return View("Index"); // Return the profile view with an error message
-                }
-                */
                 if (string.IsNullOrEmpty(newPassword) || newPassword != confirmPassword)
                 {
                     ModelState.AddModelError("PasswordFailed", "Change Password failed, please try again.");
