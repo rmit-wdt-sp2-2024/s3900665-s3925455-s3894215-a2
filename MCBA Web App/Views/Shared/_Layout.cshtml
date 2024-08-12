@@ -7,6 +7,31 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MCBA_Web_App.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/navbar-profile.css" asp-append-version="true" />
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            flex: 1;
+        }
+
+        footer {
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 1rem 0;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -24,29 +49,29 @@
                         }
                         @if (isLoggedIn)
                         {
-                        <li class="nav-item">
-                            <span class="nav-link text-dark">
-                                Welcome, @Context.Session.GetString(nameof(Customer.Name))
-                            </span>
-                        </li>
-                        <li class="nav-item">
-                            @{
+                            <li class="nav-item">
+                                <span class="nav-link text-dark">
+                                    Welcome, @Context.Session.GetString(nameof(Customer.Name))
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                @{
                                     var customer = Model as MCBA_Web_App.Models.Customer;
                                     var profilePictureUrl = string.IsNullOrEmpty(customer?.ProfilePictureFileName)
                                     ? Url.Content("~/profile_images/default_profile_image.jpg")
                                     : Url.Content("~/profile_images/" + customer.ProfilePictureFileName);
-                            }
-                            <img src="@profilePictureUrl" alt="Profile Picture" class="navbar-profile-picture" />
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Login" asp-action="Logout">Logout</a>
-                        </li>
+                                }
+                                <img src="@profilePictureUrl" alt="Profile Picture" class="navbar-profile-picture" />
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Login" asp-action="Logout">Logout</a>
+                            </li>
                         }
                         else
                         {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Login" asp-action="Login">Login</a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Login" asp-action="Login">Login</a>
+                            </li>
                         }
                     </ul>
                     <ul class="navbar-nav flex-grow-1">
@@ -59,7 +84,7 @@
                                 <a class="nav-link text-dark" asp-controller="Profile" asp-action="Index">My Profile</a>
                             </li>
                             <li class="nav-item">
-                                 <a class="nav-link text-dark" asp-controller="BillPay" asp-action="Index">BillPay</a>
+                                <a class="nav-link text-dark" asp-controller="BillPay" asp-action="Index">BillPay</a>
                             </li>
                         }
                     </ul>
@@ -73,11 +98,13 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - MCBA_Web_App - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- Footer -->
+    <footer class="bg-light text-center text-lg-start">
+        <div class="text-center p-3">
+            &copy; 2024 Most Common Bank of Australia - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
