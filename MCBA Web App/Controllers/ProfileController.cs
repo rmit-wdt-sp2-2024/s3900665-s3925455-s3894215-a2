@@ -187,6 +187,7 @@ namespace MCBA_Web_App.Controllers
                 // Save changes to the database
                 await _context.SaveChangesAsync();
 
+                TempData["SuccessMessage"] = "Password updated successfully.";
                 return RedirectToAction("Index", "Landing");
             }
             catch (Exception ex)
