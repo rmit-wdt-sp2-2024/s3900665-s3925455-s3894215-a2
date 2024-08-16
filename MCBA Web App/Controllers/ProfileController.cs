@@ -1,288 +1,68 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using MCBA_Web_App.Data;
-using MCBA_Web_App.Models;
-using Castle.Core.Resource;
-using System.Security.Cryptography;
-using SimpleHashing.Net;
-using ImageMagick;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using MCBA_Web_App.Data;  // Imports the data layer for interacting with the database.
+using MCBA_Web_App.Models;  // Imports model classes such as Login and Customer.
+using Microsoft.AspNetCore.Mvc;  // Imports ASP.NET Core MVC for creating controllers and handling requests.
+using SimpleHashing.Net;  // Imports the SimpleHashing library for securely hashing and verifying passwords.
+using System.Runtime.CompilerServices;  // Imports compiler services, though not used explicitly in the code.
+using Microsoft.AspNetCore.Http;  // Imports ASP.NET Core HTTP context, enabling session management.
 
 namespace MCBA_Web_App.Controllers
 {
-    public class ProfileController : Controller
+    // Defines the route for the controller, so all actions within this controller are accessible under the "/SecureLogin" path.
+    [Route("/SecureLogin")]
+    public class LoginController : Controller
     {
-        private readonly MCBAContext _context;
+        // Static field to hold the hashing implementation. Using `SimpleHash` from SimpleHashing.Net for password verification.
         private static readonly ISimpleHash s_simpleHash = new SimpleHash();
 
-        public ProfileController(MCBAContext context)
-        {
-            _context = context;
-        }
-        private int CustomerID => HttpContext.Session.GetInt32(nameof(Customer.CustomerID)).Value;
-        // GET: Profile
-        public async Task<IActionResult> Index()
-        {
-            // Get the CustomerID from the session
-            int loggedInCustomerId = HttpContext.Session.GetInt32(nameof(Customer.CustomerID)) ?? 0;
+        // Private field for database context to interact with the MCBA database.
+        private readonly MCBAContext _context;
 
-            // Retrieve the customer with the logged-in CustomerID
-            var customer = await _context.Customer.FindAsync(loggedInCustomerId);
+        // Constructor that injects the MCBAContext into the controller. This allows the controller to access the database.
+        public LoginController(MCBAContext context) => _context = context;
 
-            if (customer == null)
-            {
-                // If the customer is not found, return a not found result or handle as needed
-                return NotFound();
-            }
+        // Action method to display the login form. This is invoked when the user navigates to the login page (GET request).
+        public IActionResult Login() => View();
 
-            // Pass the customer data to the view
-            return View(customer);
-
-            //return View(await _context.Customer.ToListAsync());
-        }
-
-        // GET: Profile/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Customer == null)
-            {
-                return NotFound();
-            }
-
-            var customer = await _context.Customer.FindAsync(id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-            return View(customer);
-        }
-
-        // POST: Profile/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Action method to process the login form submission (POST request). It takes the user's `loginID` and `password` as inputs.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CustomerID,Name,TFN,Address,City,State,Postcode,Mobile,ProfilePictureFileName")] Customer customer)
+        public async Task<IActionResult> Login(string loginID, string password)
         {
-            if (id != customer.CustomerID)
+            // Attempt to find the login record in the database by `loginID`. This looks up the user trying to log in.
+            var login = await _context.Login.FindAsync(loginID);
+
+            // If the login record is not found, the password is empty, or password verification fails, return an error.
+            if (login == null || string.IsNullOrEmpty(password) || !s_simpleHash.Verify(password, login.PasswordHash))
             {
-                return NotFound();
+                // Add an error message to the ModelState to inform the user that login failed.
+                ModelState.AddModelError("LoginFailed", "Login failed, please try again.");
+
+                // Return the login view with the user's `LoginID` pre-filled, allowing them to try again.
+                return View(new Login { LoginID = loginID });
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(customer);
-                    await _context.SaveChangesAsync();
+            // Retrieve the `CustomerID` associated with the successful login. This will link the login to a customer.
+            var custID = login.CustomerID;
 
-                    // Check if the ProfilePictureFileName property is not null or empty
-                    if (!string.IsNullOrEmpty(customer.ProfilePictureFileName) && Request.Form.Files.Count > 0)
-                    {
-                        // Call the UploadProfilePicture method to handle the uploaded file
-                        await UploadProfilePicture(Request.Form.Files[0]);
-                    }
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CustomerExists(customer.CustomerID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(customer);
+            // Fetch the customer details from the database using the `CustomerID`. The `Customer` object is needed for session setup.
+            var customer = await _context.Customer.FindAsync(custID);
+
+            // Store the customer's `CustomerID` and `Name` in the session, effectively logging in the customer and tracking their session.
+            HttpContext.Session.SetInt32(nameof(Customer.CustomerID), login.CustomerID);
+            HttpContext.Session.SetString(nameof(Customer.Name), customer.Name);
+
+            // Redirect the customer to the "Index" action of the `LandingController`. This is typically the main page after login.
+            return RedirectToAction("Index", "Landing");
         }
 
-        private bool CustomerExists(int id)
+        // Action method to log out the user. The route `/SecureLogin/LogoutNow` is mapped to this action.
+        [Route("LogoutNow")]
+        public IActionResult Logout()
         {
-            return _context.Customer.Any(e => e.CustomerID == id);
-        }
+            // Clears all session data, effectively logging out the user by ending their session.
+            HttpContext.Session.Clear();
 
-        //Update Password
-        [HttpPost]
-        public async Task<IActionResult> UpdatePassword(string newPassword, string confirmPassword)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(newPassword) || newPassword != confirmPassword)
-                {
-                    ModelState.AddModelError("PasswordFailed", "Change Password failed, please try again.");
-                    return RedirectToAction("Index"); // Return to the profile view with an error message
-                }
-
-                int loggedInCustomerId = HttpContext.Session.GetInt32(nameof(Customer.CustomerID)) ?? 0;
-
-                // Retrieve the login based on the logged-in customer ID
-                var login = await _context.Login.FirstOrDefaultAsync(l => l.CustomerID == loggedInCustomerId);
-
-                if (login == null)
-                {
-                    // Handle the case where the login is not found
-                    return RedirectToAction("Index", "Landing");
-                }
-
-                // Generate a new salt
-                byte[] newSalt;
-                using (RNGCryptoServiceProvider rngCsp = new RNGCryptoServiceProvider())
-                {
-                    newSalt = new byte[16];
-                    rngCsp.GetBytes(newSalt);
-                }
-
-                // Generate a new hash using Rfc2898DeriveBytes
-                byte[] newHash;
-                using (var deriveBytes = new Rfc2898DeriveBytes(newPassword, newSalt, 50000, HashAlgorithmName.SHA1))
-                {
-                    newHash = deriveBytes.GetBytes(32);
-                }
-
-                // Convert salt and hash to Base64 strings
-                string saltBase64 = Convert.ToBase64String(newSalt);
-                string hashBase64 = Convert.ToBase64String(newHash);
-
-                // Construct the password hash string with the specified format
-                string passwordHashString = $"Rfc2898DeriveBytes$50000${saltBase64}${hashBase64}";
-
-                // Check if the total length is 94 characters
-                if (passwordHashString.Length != 94)
-                {
-                    // Handle the case where the format is not as expected
-                    ModelState.AddModelError("PasswordFailed", "Invalid password hash format.");
-                    return RedirectToAction("Index", "Landing");
-                }
-
-                // Update the password hash in the database
-                login.PasswordHash = passwordHashString;
-
-                // Save changes to the database
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("Index", "Landing");
-            }
-            catch (Exception ex)
-            {
-                // Log or handle the exception
-                Console.WriteLine($"Error updating password: {ex.Message}");
-                return RedirectToAction("Index", "Landing");
-            }
-        }
-        [HttpPost]
-        public async Task<IActionResult> UploadProfilePicture(IFormFile file)
-        {
-            try
-            {
-                if (file == null || file.Length == 0)
-                {
-                    // Handle the case where no file is uploaded
-                    return RedirectToAction("Index", "Landing");
-                }
-
-                int loggedInCustomerId = HttpContext.Session.GetInt32(nameof(Customer.CustomerID)) ?? 0;
-                var customer = await _context.Customer.FindAsync(loggedInCustomerId);
-
-                if (customer == null)
-                {
-                    // Handle the case where the customer is not found
-                    return RedirectToAction("Index", "Landing");
-                }
-
-                using (var imageStream = file.OpenReadStream())
-                {
-                    // Resize and convert to JPG
-                    var image = new MagickImage(imageStream);
-                    image.Format = MagickFormat.Jpg;
-                    image.Resize(new MagickGeometry(400, 400) { IgnoreAspectRatio = false });
-
-                    // Save the image to a storage location
-                    string fileName = $"profile_{Guid.NewGuid()}.jpg";
-                    string filePath = Path.Combine("wwwroot", "profile_images", fileName);
-                    image.Write(filePath);
-
-                    // Update the Customer model with the file name
-                    customer.ProfilePictureFileName = fileName;
-                    await _context.SaveChangesAsync();
-                }
-
-                return RedirectToAction("Index", "Profile");
-            }
-            catch (Exception ex)
-            {
-                // Log or handle the exception
-                Console.WriteLine($"Error uploading profile picture: {ex.Message}");
-                return RedirectToAction("Index", "Landing"); 
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteProfilePicture()
-        {
-            try
-            {
-                int loggedInCustomerId = HttpContext.Session.GetInt32(nameof(Customer.CustomerID)) ?? 0;
-                var customer = await _context.Customer.FindAsync(loggedInCustomerId);
-
-                if (customer == null)
-                {
-                    // Handle the case where the customer is not found
-                    return RedirectToAction("Index", "Landing");
-                }
-
-                // Delete the profile picture file from storage
-                string filePath = Path.Combine("wwwroot", "profile_images", customer.ProfilePictureFileName);
-                if (System.IO.File.Exists(filePath))
-                {
-                    System.IO.File.Delete(filePath);
-                }
-
-                // Update the Customer model to remove the profile picture information
-                customer.ProfilePictureFileName = null;
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("Index", "Profile");
-            }
-            catch (Exception ex)
-            {
-                // Log or handle the exception
-                Console.WriteLine($"Error deleting profile picture: {ex.Message}");
-                return RedirectToAction("Index", "Landing");
-            }
-        }
-
-        public IActionResult GetProfilePicture()
-        {
-            try
-            {
-                int loggedInCustomerId = HttpContext.Session.GetInt32(nameof(Customer.CustomerID)) ?? 0;
-                var customer = _context.Customer.Find(loggedInCustomerId);
-
-                if (customer == null || string.IsNullOrEmpty(customer.ProfilePictureFileName))
-                {
-                    // If the customer or profile picture is not found, return a default image
-                    string defaultImagePath = Path.Combine("~", "profile_images", "default_profile_image.jpg");
-                    return PhysicalFile(defaultImagePath, "image/jpeg");
-                }
-
-                // Return the customer's profile picture
-                string filePath = Path.Combine("wwwroot", "profile_images", customer.ProfilePictureFileName);
-                return PhysicalFile(filePath, "image/jpeg");
-            }
-            catch (Exception ex)
-            {
-                // Log or handle the exception
-                Console.WriteLine($"Error getting profile picture: {ex.Message}");
-                return RedirectToAction("Index", "Landing"); // or handle as appropriate
-            }
+            // Redirect the user to the home page after logging out. This brings them back to the main "Index" action of the `HomeController`.
+            return RedirectToAction("Index", "Home");
         }
     }
 }
