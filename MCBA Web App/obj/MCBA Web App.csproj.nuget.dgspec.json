@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Nikhil\\Desktop\\MCBA Web App\\MCBA Web App\\MCBA Web App.csproj": {}
+    "C:\\Users\\amitm\\Desktop\\wdt\\A2.2\\MCBA Web App\\MCBA Web App.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Nikhil\\Desktop\\MCBA Web App\\MCBA Web App\\MCBA Web App.csproj": {
+    "C:\\Users\\amitm\\Desktop\\wdt\\A2.2\\MCBA Web App\\MCBA Web App.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Nikhil\\Desktop\\MCBA Web App\\MCBA Web App\\MCBA Web App.csproj",
+        "projectUniqueName": "C:\\Users\\amitm\\Desktop\\wdt\\A2.2\\MCBA Web App\\MCBA Web App.csproj",
         "projectName": "MCBA Web App",
-        "projectPath": "C:\\Users\\Nikhil\\Desktop\\MCBA Web App\\MCBA Web App\\MCBA Web App.csproj",
-        "packagesPath": "C:\\Users\\Nikhil\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Nikhil\\Desktop\\MCBA Web App\\MCBA Web App\\obj\\",
+        "projectPath": "C:\\Users\\amitm\\Desktop\\wdt\\A2.2\\MCBA Web App\\MCBA Web App.csproj",
+        "packagesPath": "C:\\Users\\amitm\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\amitm\\Desktop\\wdt\\A2.2\\MCBA Web App\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Nikhil\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\amitm\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -108,7 +108,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     }
