@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MCBA Web App")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5ed49dc0f46d98f4841f25ed3690d191e9d9fdfd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ce2f6e8e08039ccc6826d22e539f704d0592e54a")]
 [assembly: System.Reflection.AssemblyProductAttribute("MCBA Web App")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MCBA Web App")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
