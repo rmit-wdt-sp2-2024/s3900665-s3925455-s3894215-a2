@@ -80,6 +80,13 @@ namespace MCBA_Web_App.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BillPayID,AccountNumber,PayeeID,Amount,ScheduleTimeUtc,Period")] BillPay billPay)
         {
+            // Validate PayeeID field by checking if the Payee exists in the database
+            var payeeExists = await _context.Payee.AnyAsync(p => p.PayeeID == billPay.PayeeID);
+            if (!payeeExists)
+            {
+                ModelState.AddModelError(nameof(billPay.PayeeID), "The Payee is invalid.");
+            }
+
             if (ModelState.IsValid)
             {
                 // Ensure ScheduleTimeUtc is within a valid range
@@ -133,6 +140,13 @@ namespace MCBA_Web_App.Controllers
             if (id != billPay.BillPayID)
             {
                 return NotFound();
+            }
+
+            // Validate PayeeID field by checking if the Payee exists in the database
+            var payeeExists = await _context.Payee.AnyAsync(p => p.PayeeID == billPay.PayeeID);
+            if (!payeeExists)
+            {
+                ModelState.AddModelError(nameof(billPay.PayeeID), "The payee's account number is invalid.");
             }
 
             if (ModelState.IsValid)
