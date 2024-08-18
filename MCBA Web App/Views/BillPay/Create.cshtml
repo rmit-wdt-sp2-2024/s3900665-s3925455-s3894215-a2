@@ -4,22 +4,18 @@
     ViewData["Title"] = "Create New BillPay";
 }
 
-<h2>Create Bill Pay</h2>
+<h2>Create New BillPay</h2>
 
 <form asp-action="Create">
     <div class="form-horizontal">
-        <h4>BillPay Details</h4>
+        <h4>BillPay</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-        <div class="d-flex mb-3">
-            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-        </div>
 
         <div class="form-group">
             <label asp-for="AccountNumber" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="AccountNumber" class="form-control" />
+                <select asp-for="AccountNumber" class="form-control" asp-items="ViewBag.Accounts"></select>
                 <span asp-validation-for="AccountNumber" class="text-danger"></span>
             </div>
         </div>
@@ -58,13 +54,15 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <br />
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </div>
     </div>
 </form>
 
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
 
 @section Scripts {
     @{

@@ -80,28 +80,31 @@ namespace MCBA_Web_App.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BillPayID,AccountNumber,PayeeID,Amount,ScheduleTimeUtc,Period")] BillPay billPay)
         {
-            // Validate PayeeID field by checking if the Payee exists in the database
-            var payeeExists = await _context.Payee.AnyAsync(p => p.PayeeID == billPay.PayeeID);
+            // Validate PayeeID by checking if the Payee exists and is not the same as the AccountNumber
+            bool payeeExists = await _context.Account.AnyAsync(a => a.AccountNumber == billPay.PayeeID);
             if (!payeeExists)
             {
                 ModelState.AddModelError(nameof(billPay.PayeeID), "The Payee is invalid.");
             }
+            else if (billPay.PayeeID == billPay.AccountNumber)
+            {
+                ModelState.AddModelError(nameof(billPay.PayeeID), "Payee cannot be the same as the account number.");
+            }
+
+            // Validate ScheduleTimeUtc field to ensure it is within a valid range.
+            if (billPay.ScheduleTimeUtc < SqlDateTime.MinValue.Value || billPay.ScheduleTimeUtc > SqlDateTime.MaxValue.Value)
+            {
+                ModelState.AddModelError("ScheduleTimeUtc", "The scheduled date must be within a valid range.");
+            }
 
             if (ModelState.IsValid)
             {
-                // Ensure ScheduleTimeUtc is within a valid range
-                if (billPay.ScheduleTimeUtc < SqlDateTime.MinValue.Value || billPay.ScheduleTimeUtc > SqlDateTime.MaxValue.Value)
-                {
-                    ModelState.AddModelError("ScheduleTimeUtc", "The scheduled date must be within a valid range.");
-                    return View(billPay);
-                }
-
                 _context.Add(billPay);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            // Re-fetch accounts in case of validation errors
+            // Re-fetch accounts in case of validation errors.
             int? loggedInUserId = HttpContext.Session.GetInt32(nameof(Customer.CustomerID));
             var accounts = await _context.Account
                 .Where(a => a.CustomerID == loggedInUserId)
@@ -142,11 +145,15 @@ namespace MCBA_Web_App.Controllers
                 return NotFound();
             }
 
-            // Validate PayeeID field by checking if the Payee exists in the database
-            var payeeExists = await _context.Payee.AnyAsync(p => p.PayeeID == billPay.PayeeID);
+            // Validate PayeeID by checking if the Payee exists and is not the same as the AccountNumber
+            bool payeeExists = await _context.Payee.AnyAsync(p => p.PayeeID == billPay.PayeeID);
             if (!payeeExists)
             {
-                ModelState.AddModelError(nameof(billPay.PayeeID), "The payee's account number is invalid.");
+                ModelState.AddModelError(nameof(billPay.PayeeID), "The Payee is invalid.");
+            }
+            else if (billPay.PayeeID == billPay.AccountNumber)
+            {
+                ModelState.AddModelError(nameof(billPay.PayeeID), "Payee cannot be the same as the account number.");
             }
 
             if (ModelState.IsValid)
