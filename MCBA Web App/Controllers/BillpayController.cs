@@ -33,7 +33,7 @@ namespace MCBA_Web_App.Controllers
             if (loggedInUserId == null)
             {
                 // Handle the case where the user is not logged in
-                return RedirectToAction("Login", "Home");
+                return RedirectToAction("Index", "Home");
             }
 
             // Start the BillPayService with CustomerID
@@ -62,7 +62,7 @@ namespace MCBA_Web_App.Controllers
             if (loggedInUserId == null)
             {
                 // Handle the case where the user is not logged in
-                return RedirectToAction("Login", "Home");
+                return RedirectToAction("Index", "Home");
             }
 
             // Fetch accounts for the logged-in user
@@ -80,21 +80,37 @@ namespace MCBA_Web_App.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BillPayID,AccountNumber,PayeeID,Amount,ScheduleTimeUtc,Period")] BillPay billPay)
         {
+            // Validate PayeeID by checking if the Payee exists and is not the same as the AccountNumber
+            bool payeeExists = await _context.Account.AnyAsync(a => a.AccountNumber == billPay.PayeeID);
+            if (!payeeExists)
+            {
+                ModelState.AddModelError(nameof(billPay.PayeeID), "The Payee is invalid.");
+            }
+            else if (billPay.PayeeID == billPay.AccountNumber)
+            {
+                ModelState.AddModelError(nameof(billPay.PayeeID), "Payee cannot be the same as the account number.");
+            }
+
+            // Validate ScheduleTimeUtc to ensure it's not in the past
+            if (billPay.ScheduleTimeUtc < DateTime.UtcNow)
+            {
+                ModelState.AddModelError(nameof(billPay.ScheduleTimeUtc), "Scheduled time cannot be in the past.");
+            }
+
+            // Validate ScheduleTimeUtc field to ensure it is within a valid range.
+            if (billPay.ScheduleTimeUtc < SqlDateTime.MinValue.Value || billPay.ScheduleTimeUtc > SqlDateTime.MaxValue.Value)
+            {
+                ModelState.AddModelError("ScheduleTimeUtc", "The scheduled date must be within a valid range.");
+            }
+
             if (ModelState.IsValid)
             {
-                // Ensure ScheduleTimeUtc is within a valid range
-                if (billPay.ScheduleTimeUtc < SqlDateTime.MinValue.Value || billPay.ScheduleTimeUtc > SqlDateTime.MaxValue.Value)
-                {
-                    ModelState.AddModelError("ScheduleTimeUtc", "The scheduled date must be within a valid range.");
-                    return View(billPay);
-                }
-
                 _context.Add(billPay);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            // Re-fetch accounts in case of validation errors
+            // Re-fetch accounts in case of validation errors.
             int? loggedInUserId = HttpContext.Session.GetInt32(nameof(Customer.CustomerID));
             var accounts = await _context.Account
                 .Where(a => a.CustomerID == loggedInUserId)
@@ -135,6 +151,23 @@ namespace MCBA_Web_App.Controllers
                 return NotFound();
             }
 
+            // Validate PayeeID by checking if the Payee exists and is not the same as the AccountNumber
+            bool payeeExists = await _context.Account.AnyAsync(a => a.AccountNumber == billPay.PayeeID);
+            if (!payeeExists)
+            {
+                ModelState.AddModelError(nameof(billPay.PayeeID), "The Payee is invalid.");
+            }
+            else if (billPay.PayeeID == billPay.AccountNumber)
+            {
+                ModelState.AddModelError(nameof(billPay.PayeeID), "Payee cannot be the same as the account number.");
+            }
+
+            // Validate ScheduleTimeUtc to ensure it's not in the past
+            if (billPay.ScheduleTimeUtc < DateTime.UtcNow)
+            {
+                ModelState.AddModelError(nameof(billPay.ScheduleTimeUtc), "Scheduled time cannot be in the past.");
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -160,6 +193,60 @@ namespace MCBA_Web_App.Controllers
             }
 
             return View(billPay);
+        }
+
+        // GET: BillPay/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var billPay = await _context.BillPay
+                .Include(b => b.Account)
+                .FirstOrDefaultAsync(m => m.BillPayID == id);
+
+            if (billPay == null)
+            {
+                return NotFound();
+            }
+
+            return View(billPay);
+        }
+
+        // GET: BillPay/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var billPay = await _context.BillPay
+                .Include(b => b.Account)
+                .FirstOrDefaultAsync(m => m.BillPayID == id);
+
+            if (billPay == null)
+            {
+                return NotFound();
+            }
+
+            return View(billPay);
+        }
+
+        // POST: BillPay/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var billPay = await _context.BillPay.FindAsync(id);
+            if (billPay != null)
+            {
+                _context.BillPay.Remove(billPay);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // Helper method to check if a BillPay entry exists

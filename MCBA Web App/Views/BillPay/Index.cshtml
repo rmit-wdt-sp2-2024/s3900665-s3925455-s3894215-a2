@@ -1,54 +1,39 @@
 ﻿@model IEnumerable<MCBA_Web_App.Models.BillPay>
 
-<h2>Bill Pays</h2>
+@{
+    ViewData["Title"] = "Bill Pays";
+}
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
+<h2 class="mb-4">Bill Pays</h2>
+
+<div class="d-flex justify-content-end mb-3">
+    <a asp-action="Create" class="btn btn-primary">Create New Bill Pay</a>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead class="thead-dark">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.AccountNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PayeeID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ScheduleTimeUtc)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Period)
-            </th>
-            <th></th>
+            <th>@Html.DisplayNameFor(model => model.AccountNumber)</th>
+            <th>@Html.DisplayNameFor(model => model.PayeeID)</th>
+            <th>@Html.DisplayNameFor(model => model.Amount)</th>
+            <th>@Html.DisplayNameFor(model => model.ScheduleTimeUtc)</th>
+            <th>@Html.DisplayNameFor(model => model.Period)</th>
+            <th class="text-center">Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AccountNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PayeeID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Amount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ScheduleTimeUtc)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Period)
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.BillPayID">Details</a> |
-                    <a asp-action="Edit" asp-route-id="@item.BillPayID">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.BillPayID">Delete</a>
+                <td>@Html.DisplayFor(modelItem => item.AccountNumber)</td>
+                <td>@Html.DisplayFor(modelItem => item.PayeeID)</td>
+                <td>@Html.DisplayFor(modelItem => item.Amount)</td>
+                <td>@Html.DisplayFor(modelItem => item.ScheduleTimeUtc)</td>
+                <td>@Html.DisplayFor(modelItem => item.Period)</td>
+                <td class="text-center">
+                    <a asp-action="Details" asp-route-id="@item.BillPayID" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Edit" asp-route-id="@item.BillPayID" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.BillPayID" class="btn btn-sm btn-danger">Delete</a>
                 </td>
             </tr>
         }

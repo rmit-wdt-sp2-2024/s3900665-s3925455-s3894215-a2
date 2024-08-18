@@ -1,10 +1,12 @@
 ﻿@model MCBA_Web_App.Models.BillPay
 
 @{
-    ViewData["Title"] = "Bill Pay Details";
+    ViewData["Title"] = "Delete Bill Pay";
 }
 
-<h1>Bill Pay Details</h1>
+<h1>Delete Bill Pay</h1>
+
+<h3>Are you sure you want to delete this bill pay?</h3>
 
 <div>
     <h4>BillPay</h4>
@@ -41,8 +43,10 @@
             @Html.DisplayFor(model => model.Period)
         </dd>
     </dl>
-    <div>
-        <a asp-action="Edit" asp-route-id="@Model.BillPayID" class="btn btn-primary">Edit</a>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-    </div>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="BillPayID" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
 </div>
